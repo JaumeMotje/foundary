@@ -1,5 +1,6 @@
 package com.foundary.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,6 +16,8 @@ public class LostItem {
     private Long id;
     
     private String description;
+    
+    @Column(unique = true, nullable = false)
     private String uniqueCode;  // This is the code to generate the QR
     private String qrImageUrl;
 
