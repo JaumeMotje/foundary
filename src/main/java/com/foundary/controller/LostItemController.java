@@ -38,6 +38,4 @@ public class LostItemController {
         LostItemDTO lostItemDTO = new LostItemDTO(lostItem.getId(), lostItem.getDescription(), lostItem.getUniqueCode(), ownerDTO);
         return ResponseEntity.ok(lostItemDTO);
     }
-
-    
 }

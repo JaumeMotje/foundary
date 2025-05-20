@@ -1,6 +1,8 @@
 package com.foundary.controller;
 
 import com.foundary.dto.UserDTO;
+import com.foundary.dto.LostItemDTO;
+import com.foundary.model.LostItem;
 import com.foundary.model.User;
 import com.foundary.request.LoginRequest;
 import com.foundary.service.UserService;
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -48,4 +51,9 @@ public class UserController {
         return ResponseEntity.ok(userDTO);
     }
     
+    @GetMapping("/{userId}/objects")
+    public ResponseEntity<List<LostItem>> getObjectsByUserId(@PathVariable Long userId) {
+        List<LostItem> items = userService.getLostItemsByUserId(userId);
+        return ResponseEntity.ok(items);
+    }
 }

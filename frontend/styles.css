@@ -29,24 +29,35 @@ th, td {
   background: white;
 }
 
+#messages-section {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.message-list {
+  list-style: none;
+  padding: 0;
+}
+
 .message {
-  margin-bottom: 12px;
-  padding: 8px;
-  border-radius: 6px;
-  max-width: 70%;
+  max-width: 60%;
+  margin: 8px;
+  padding: 10px;
+  border-radius: 10px;
   clear: both;
 }
 
-.mine {
+.message-left {
+  background-color: #f1f0f0;
+  float: left;
+  text-align: left;
+}
+
+.message-right {
   background-color: #d1e7dd;
   float: right;
   text-align: right;
-}
-
-.theirs {
-  background-color: #f8d7da;
-  float: left;
-  text-align: left;
 }
 
 #form {

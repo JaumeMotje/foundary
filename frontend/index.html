@@ -31,10 +31,20 @@
     <h2>Mis objetos registrados</h2>
     <table id="objects-table">
       <thead>
-        <tr><th>ID</th><th>Descripción</th><th>Unique Code</th><th>QR URL</th></tr>
+        <tr><th>Descripción</th><th>Unique Code</th><th>QR URL</th></tr>
       </thead>
       <tbody></tbody>
     </table>
+  </div>
+
+  <!-- Sección donde mostraremos los mensajes -->
+  <div id="messages-section" class="hidden">
+    <h3>Mensajes del objeto <span id="messages-object-code"></span></h3>
+    <ul id="message-list" class="message-list"></ul>
+    <form id="send-message-form">
+      <input type="text" id="new-message" placeholder="Escribe un mensaje..." required />
+      <button type="submit">Enviar</button>
+    </form>
   </div>
 
   <script src="main.js"></script>
