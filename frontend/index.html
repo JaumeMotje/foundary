@@ -2,18 +2,41 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Chat de Objetos Perdidos</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Foundary</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <h1>Bienvenido a Foundary</h1>
-  <a href="register.html">Registrarse</a> | 
-  <div id="status"></div>
 
+  <a href="register.html">Registrarse</a> |
   <nav>
     <a href="login.html">Login</a>
-    <button id="logoutBtn" style="display: none;">Logout</button>
+    <button id="logoutBtn" style="display: none;" onclick="logout()">Logout</button>
   </nav>
+
+  <div id="status">No logeado</div>
+
+  <!-- Sección para registrar nuevo objeto (solo visible si estás logeado) -->
+  <div id="register-object-form" class="hidden">
+    <h2>Registrar nuevo objeto</h2>
+    <input type="text" id="description" placeholder="Descripción" /><br />
+    <input type="text" id="uniqueCode" placeholder="Código único" /><br />
+    <input type="text" id="qrImageUrl" placeholder="URL del QR" /><br />
+    <button onclick="registerObject()">Registrar Objeto</button>
+  </div>
+
+  <!-- Tabla con objetos del usuario -->
+  <div id="user-objects" class="hidden">
+    <h2>Mis objetos registrados</h2>
+    <table id="objects-table">
+      <thead>
+        <tr><th>ID</th><th>Descripción</th><th>Unique Code</th><th>QR URL</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
   <script src="main.js"></script>
 </body>
 </html>
