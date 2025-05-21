@@ -52,8 +52,17 @@ public class UserController {
     }
     
     @GetMapping("/{userId}/objects")
-    public ResponseEntity<List<LostItem>> getObjectsByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<LostItemDTO>> getObjectsByUserId(@PathVariable Long userId) {
         List<LostItem> items = userService.getLostItemsByUserId(userId);
-        return ResponseEntity.ok(items);
+
+        List<LostItemDTO> itemsDTO = items.stream()
+        .map(item -> {
+            User owner = item.getUser();
+            UserDTO ownerDTO = new UserDTO(owner.getId(), owner.getUsername(), owner.getEmail());
+            return new LostItemDTO(item.getId(), item.getDescription(), item.getUniqueCode(), ownerDTO);
+        })
+        .toList();
+
+        return ResponseEntity.ok(itemsDTO);
     }
 }
