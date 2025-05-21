@@ -71,7 +71,10 @@ public class ChatController {
         // 2. Find ChatRoom by objectId
         ChatRoom chatRoom = chatRoomRepository.findByObjectId(objectId);
         if (chatRoom == null) {
-            return ResponseEntity.notFound().build();  // Return 404 if no chat room exists for this object
+            // Crete ChatRoom if it does not already exist
+            chatRoom = new ChatRoom();
+            chatRoom.setObjectId(objectId);
+            chatRoom = chatRoomRepository.save(chatRoom);
         }
 
         // 3. Retrieve messages linked to the chat room
