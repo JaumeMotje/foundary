@@ -80,19 +80,15 @@ function fetchUserObjects() {
         const descCell = document.createElement("td");
         descCell.textContent = obj.description;
 
-        const qrCell = document.createElement("td");
-        qrCell.textContent = obj.qrImageUrl;
-
         row.appendChild(descCell);
         row.appendChild(codeCell);
-        row.appendChild(qrCell);
         tbody.appendChild(row);
       });
     })
     .catch(err => console.error("Error al cargar objetos del usuario:", err));
 }
 
-function fetchMessagesForObject(uniqueCode) {
+function fetchMessagesForObject(uniqueCode, isExternal = false) {
   currentObjectCode = uniqueCode;
   fetch(`http://localhost:8080/chat/object/${uniqueCode}/messages`)
     .then(res => {
@@ -106,18 +102,21 @@ function fetchMessagesForObject(uniqueCode) {
       document.getElementById("messages-section").classList.remove("hidden");
 
       messages.forEach(msg => {
-        const li = document.createElement("li");
-        li.textContent = msg.content;
-        li.classList.add("message");
-
-        if (msg.senderId === user.id) {
-          li.classList.add("message-right");
+        const div = document.createElement("div");
+        div.textContent = msg.content;
+        div.classList.add("message");
+        if (isExternal) {
+          // El dueño va a la izquierda, el otro a la derecha
+          div.classList.add(msg.senderId === currentOwnerId ? "message-left" : "message-right");
         } else {
-          li.classList.add("message-left");
+          // Usuario logeado va a la derecha, el otro a la izquierda
+          div.classList.add(msg.senderId === user.id ? "message-right" : "message-left");
         }
-
-        list.appendChild(li);
+        list.appendChild(div);
       });
+
+      // Scroll al final
+      list.scrollTop = list.scrollHeight;
     })
     .catch(err => alert(err));
 }
@@ -125,14 +124,15 @@ function fetchMessagesForObject(uniqueCode) {
 document.getElementById("send-message-form").addEventListener("submit", function (e) {
   e.preventDefault();
   const content = document.getElementById("new-message").value.trim();
-  if (!content || !user || !currentObjectCode) return;
+  if (!content || !currentObjectCode) return;
+  const messageSenderId = (user && user.id) ? user.id : -1; // -1 para usuarios anónimos
 
   fetch(`http://localhost:8080/chat/object/${currentObjectCode}/message`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       content,
-      senderId: user.id
+      senderId: messageSenderId
     })
   })
   .then(res => {
@@ -144,4 +144,37 @@ document.getElementById("send-message-form").addEventListener("submit", function
     fetchMessagesForObject(currentObjectCode); // Recargar mensajes
   })
   .catch(err => alert(err));
+});
+
+let currentOwnerId = null;  // Guardaremos el owner del objeto
+
+document.getElementById("found-object-form").addEventListener("submit", function (e) {
+  e.preventDefault();
+  const code = document.getElementById("found-code-input").value.trim();
+  if (!code) { 
+    document.getElementById("found-code-input").value = "";
+    return; 
+  }
+
+  fetch(`http://localhost:8080/api/lost-items/${code}`)
+    .then(res => {
+      if (!res.ok) {
+        document.getElementById("found-code-input").value = "";
+        throw new Error("Código inválido o no encontrado");
+      }
+      return res.json();
+    })
+    .then(obj => {
+      if (user && user.id === obj.owner.id) {
+        alert("¡Este objeto es tuyo! Puedes verlo directamente en tu panel de objetos registrados.");
+        return;
+      }
+      currentObjectCode = code;
+      currentOwnerId = obj.owner.id; // Guardamos el ownerId
+
+      document.getElementById("found-code-input").value = "";
+
+      fetchMessagesForObject(code, true); // true indica que somos externos (no dueños)
+    })
+    .catch(err => alert(err));
 });
